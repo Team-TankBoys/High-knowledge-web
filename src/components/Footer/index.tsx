@@ -1,52 +1,20 @@
+import logo from "../../assets/logo.svg";
+
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-300 mt-auto">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-lg font-bold text-white mb-4">
-              High Knowledge
-            </h3>
-            <p className="text-sm">
-              고등학교별 자유게시판 커뮤니티
-              <br />
-              학생들의 소통과 지식 공유 플랫폼
-            </p>
+    <footer className="bg-white text-gray-500 leading-normal mt-auto border-t border-gray-200">
+      <div className="container mx-auto px-6 py-8">
+        <div className="flex flex-col md:flex-row items-start md:space-x-8 space-y-4 md:space-y-0">
+          <div className="flex flex-col items-start">
+            <img src={logo} alt="High Knowledge logo" className="h-5 self-start" />
+            <h3 className="text-sm font-normal text-[#636363] mt-2">우리만의 무법지대</h3>
           </div>
 
-          <div>
-            <h3 className="text-lg font-bold text-white mb-4">바로가기</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:text-white transition">
-                  이용약관
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition">
-                  개인정보처리방침
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition">
-                  공지사항
-                </a>
-              </li>
-            </ul>
+          <div className="flex flex-col items-start space-y-1 text-sm text-gray-500 mt-2 md:mt-0">
+            <span>대표: 홍지율</span>
+            <span>문의: pjmin0923@gmail.com</span>
+            <span>전화번호: 010-9242-7038</span>
           </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-white mb-4">문의하기</h3>
-            <p className="text-sm">
-              이메일: support@highknowledge.com
-              <br />
-              운영시간: 평일 09:00 - 18:00
-            </p>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-700 mt-8 pt-6 text-center text-sm">
-          <p>&copy; 2025 High Knowledge. All rights reserved.</p>
         </div>
       </div>
     </footer>
