@@ -1,108 +1,112 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
+
 const Home = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const schools = [
+    { id: "1", name: "대구소프트웨어마이스터고등학교" },
+    { id: "2", name: "대덕소프트웨어마이스터고등학교" },
+    { id: "3", name: "대구경일고등학교" },
+    { id: "4", name: "대구남대비마이스터고등학교" },
+    { id: "5", name: "대구문화고등학교" },
+    { id: "6", name: "대구대륜고등학교" },
+    { id: "7", name: "대구능인고등학교" },
+    { id: "8", name: "경북대사범대부설고등학교" },
+    { id: "9", name: "XXX고등학교" },
+    { id: "10", name: "AAA고등학교" },
+    { id: "11", name: "BBB고등학교" },
+    { id: "12", name: "CCC고등학교" },
+    { id: "13", name: "DDD고등학교" },
+  ];
+
+  const filteredSchools = schools.filter((school) =>
+    school.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSchoolClick = (schoolId: string) => {
+    navigate(`/school/${schoolId}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-linear-to-r from-blue-600 to-blue-800 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">우리 학교만의 자유게시판</h1>
-          <p className="text-xl mb-8 text-blue-100">
-            같은 학교 친구들과 소통하고, 정보를 공유하세요
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition">
-              시작하기
-            </button>
-            <button className="px-8 py-3 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition border-2 border-white">
-              학교 찾기
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-            왜 High Knowledge인가요?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
-              <div className="text-4xl mb-4">🏫</div>
-              <h3 className="text-xl font-bold mb-3 text-gray-800">
-                학교별 커뮤니티
-              </h3>
-              <p className="text-gray-600">
-                우리 학교만의 독립적인 게시판에서 자유롭게 소통하세요
-              </p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="flex-1">
+        {/* Hero Section */}
+        <section className="bg-white py-16 px-4">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="mb-6">
+              <span className="text-4xl">👋</span>
             </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              우리만의 무차지대! 고지식에 오신 걸 환영합니다!
+            </h1>
+            <p className="text-gray-600 mb-2">
+              교내 익명 게시판에서 마음껏 대화해 보세요.
+            </p>
+            <p className="text-gray-500 text-sm mb-4">
+              당신의 의견, 성별, 나이 등에 관여하지 않습니다.
+            </p>
+            <p className="text-gray-500 text-sm mb-8">
+              전부는 요구하지 않습니다.
+            </p>
+            <p className="text-gray-500 text-sm mb-8">
+              하고 싶은 말을 모두 할 수 있습니다.
+            </p>
 
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
-              <div className="text-4xl mb-4">💬</div>
-              <h3 className="text-xl font-bold mb-3 text-gray-800">
-                실시간 소통
-              </h3>
-              <p className="text-gray-600">
-                궁금한 점을 물어보고, 정보를 나누며 함께 성장하세요
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
-              <div className="text-4xl mb-4">🔒</div>
-              <h3 className="text-xl font-bold mb-3 text-gray-800">
-                안전한 환경
-              </h3>
-              <p className="text-gray-600">
-                학교 인증을 통한 안전하고 건전한 커뮤니티 문화를 만들어요
-              </p>
+            {/* Search Box */}
+            <div className="max-w-md mx-auto">
+              <input
+                type="text"
+                placeholder="학교 이름으로 검색..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Popular Schools Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-            인기 학교 게시판
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              "대구소프트웨어고등학교",
-              "○○고등학교",
-              "△△고등학교",
-              "□□고등학교",
-            ].map((school, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 p-6 rounded-lg hover:bg-blue-50 transition cursor-pointer border-2 border-transparent hover:border-blue-300"
-              >
-                <h3 className="font-bold text-lg mb-2 text-gray-800">
-                  {school}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  게시글 {Math.floor(Math.random() * 500 + 100)}개
-                </p>
-                <span className="text-blue-600 text-sm font-semibold">
-                  바로가기 →
-                </span>
-              </div>
-            ))}
+        {/* Schools List Section */}
+        <section className="py-8 px-4">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg shadow-sm">
+              {filteredSchools.length > 0 ? (
+                <div className="divide-y divide-gray-200">
+                  {filteredSchools.map((school) => (
+                    <button
+                      key={school.id}
+                      onClick={() => handleSchoolClick(school.id)}
+                      className="w-full px-6 py-4 text-left hover:bg-gray-50 transition flex items-center justify-between group"
+                    >
+                      <span className="text-gray-900 font-medium">
+                        {school.name}
+                      </span>
+                      <svg
+                        className="w-5 h-5 text-gray-400 group-hover:text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="px-6 py-12 text-center text-gray-500">
+                  검색 결과가 없습니다.
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">지금 바로 시작하세요</h2>
-          <p className="text-xl mb-8 text-blue-100">
-            우리 학교 친구들과 함께하는 특별한 공간
-          </p>
-          <button className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition text-lg">
-            회원가입하고 시작하기
-          </button>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };
