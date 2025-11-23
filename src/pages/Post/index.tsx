@@ -3,8 +3,13 @@ import { useState, useEffect } from "react";
 import NotFound from "../NotFound";
 import Input from "../../components/Input";
 import { db } from "../../firebase";
-import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
-import Banner from "../../assets/vertical-meme.webp";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  increment,
+  deleteDoc,
+} from "firebase/firestore";
 
 interface Comment {
   id: number;
@@ -18,6 +23,8 @@ interface PostData {
   schoolId: string;
   upvote: number;
   downvote: number;
+  createdAt: string;
+  password: string;
 }
 
 interface SchoolData {
@@ -28,7 +35,7 @@ interface SchoolData {
 const Post = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [commentInput, setCommentInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [postData, setPostData] = useState<PostData | null>(null);
   const [schoolName, setSchoolName] = useState<string>("");
@@ -112,15 +119,28 @@ const Post = () => {
     }
   };
 
-  const handleCommentSubmit = () => {
-    if (commentInput.trim()) {
-      const newComment: Comment = {
-        id: comments.length + 1,
-        content: commentInput,
-        date: new Date().toLocaleString("ko-KR"),
-      };
-      setComments([...comments, newComment]);
-      setCommentInput("");
+  const handleDelete = async () => {
+    if (!id || !postData) return;
+
+    if (!passwordInput.trim()) {
+      alert("비밀번호를 입력해 주세요.");
+      return;
+    }
+
+    if (passwordInput !== postData.password) {
+      alert("비밀번호가 일치하지 않습니다.");
+      setPasswordInput("");
+      return;
+    }
+
+    try {
+      const postRef = doc(db, "posts", id);
+      await deleteDoc(postRef);
+      alert("게시물이 삭제되었습니다.");
+      navigate(`/school/${postData.schoolId}`);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      alert("게시물 삭제에 실패했습니다.");
     }
   };
 
@@ -203,16 +223,25 @@ const Post = () => {
             </span>
             <div className="flex-1 flex flex-col">
               {/* 게시물 상세 */}
-              <div className="flex-1 p-8 border-t border-line-alter flex flex-col">
+              <div className="flex-1 p-8 pl-0 border-t border-line-alter flex flex-col">
                 {/* 제목 */}
-                <div className="pb-6 mb-6 border-b border-line-normal">
+                <div className="pl-5 pb-6 mb-6 border-b border-line-normal">
                   <h1 className="mb-3 text-2xl font-bold text-label-normal">
                     {postData.title}
                   </h1>
+                  <p className="text-sm text-label-neutral">
+                    {new Date(postData.createdAt).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
                 </div>
 
                 {/* 내용 */}
-                <div className="flex-1 mb-8 overflow-auto">
+                <div className="flex-1 pl-5 mb-8 overflow-auto">
                   <p className="text-label-assistive whitespace-pre-wrap">
                     {postData.content}
                   </p>
@@ -226,12 +255,12 @@ const Post = () => {
               <div className="flex-1">
                 <Input
                   placeholder="비밀번호를 입력해 주세요."
-                  value={commentInput}
-                  setValue={setCommentInput}
+                  value={passwordInput}
+                  setValue={setPasswordInput}
                 />
               </div>
               <button
-                onClick={handleCommentSubmit}
+                onClick={handleDelete}
                 className="px-6 py-3 font-medium text-white transition bg-red-400 rounded hover:bg-red-500"
               >
                 삭제하기
