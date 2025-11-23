@@ -19,6 +19,7 @@ interface Post {
   title: string;
   upvote: number;
   downvote: number;
+  createdAt: string;
 }
 
 interface SchoolData {
@@ -63,6 +64,16 @@ const School = () => {
     } else {
       return num.toString();
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "-";
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}.${month}.${day}.`;
   };
 
   useEffect(() => {
@@ -132,6 +143,7 @@ const School = () => {
             title: postData.title,
             upvote: postData.upvote || 0,
             downvote: postData.downvote || 0,
+            createdAt: postData.createdAt || new Date().toISOString(),
           });
         });
         setPosts(postsData);
@@ -210,6 +222,9 @@ const School = () => {
                     제목
                   </th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
+                    작성일자
+                  </th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
                     현상금
                   </th>
                 </tr>
@@ -226,6 +241,9 @@ const School = () => {
                         {post.title}
                       </td>
                       <td className="px-6 py-4 text-sm text-label-normal text-center">
+                        {formatDate(post.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-label-normal text-center">
                         {formatNumber(post.upvote - post.downvote)}₩
                       </td>
                     </tr>
@@ -233,7 +251,7 @@ const School = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan={2}
+                      colSpan={3}
                       className="px-6 py-8 text-center text-label-alter"
                     >
                       게시글이 없습니다.
