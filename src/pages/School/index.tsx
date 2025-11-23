@@ -9,7 +9,10 @@ import {
   query,
   where,
   getDocs,
+  setDoc,
 } from "firebase/firestore";
+import axios, { type AxiosResponse } from "axios";
+import Banner from "../../assets/nyan-cat.gif";
 
 interface Post {
   id: string;
@@ -23,6 +26,27 @@ interface SchoolData {
   address: string;
 }
 
+type HeadResult = {
+  RESULT: {
+    CODE: string;
+    MESSAGE: string;
+  };
+};
+
+type Row = {
+  SD_SCHUL_CODE: string;
+  SCHUL_NM: string;
+  LCTN_SC_NM: string | null;
+  ORG_RDNMA: string | null;
+};
+
+type SchoolResponseType = {
+  schoolInfo: [
+    { head: [{ list_total_count: number }, HeadResult] },
+    { row: Row[] }
+  ];
+};
+
 const School = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -30,6 +54,16 @@ const School = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    } else {
+      return num.toString();
+    }
+  };
 
   useEffect(() => {
     const fetchSchoolData = async () => {
@@ -40,32 +74,67 @@ const School = () => {
       }
 
       try {
+        // 1. Firebase에서 학교 정보 조회
         const schoolRef = doc(db, "schools", id);
         const schoolSnap = await getDoc(schoolRef);
 
+        let schoolInfo: SchoolData | null = null;
+
         if (schoolSnap.exists()) {
-          const data = schoolSnap.data() as SchoolData;
-          setSchoolData(data);
-
-          // 해당 학교의 게시물 가져오기
-          const postsRef = collection(db, "posts");
-          const q = query(postsRef, where("schoolId", "==", id));
-          const querySnapshot = await getDocs(q);
-
-          const postsData: Post[] = [];
-          querySnapshot.forEach((doc) => {
-            const postData = doc.data();
-            postsData.push({
-              id: doc.id,
-              title: postData.title,
-              upvote: postData.upvote || 0,
-              downvote: postData.downvote || 0,
-            });
-          });
-          setPosts(postsData);
+          schoolInfo = schoolSnap.data() as SchoolData;
         } else {
-          setNotFound(true);
+          // 2. Firebase에 없으면 NEIS API에서 조회
+          try {
+            const url = `https://open.neis.go.kr/hub/schoolInfo?KEY=e693965987434503a8e3a70210211b25&Type=json&pIndex=1&pSize=1&SCHUL_KND_SC_NM=고등학교&SD_SCHUL_CODE=${id}`;
+            const res: AxiosResponse<SchoolResponseType | HeadResult> =
+              await axios.get(url);
+
+            if (
+              "schoolInfo" in res.data &&
+              res.data.schoolInfo[1].row.length > 0
+            ) {
+              const schoolData = res.data.schoolInfo[1].row[0];
+              schoolInfo = {
+                name: schoolData.SCHUL_NM,
+                address:
+                  schoolData.ORG_RDNMA ||
+                  schoolData.LCTN_SC_NM ||
+                  "주소 정보 없음",
+              };
+
+              // Firebase에 저장
+              await setDoc(doc(db, "schools", id), schoolInfo);
+            } else {
+              setNotFound(true);
+              setLoading(false);
+              return;
+            }
+          } catch (apiError) {
+            console.error("Error fetching from NEIS API:", apiError);
+            setNotFound(true);
+            setLoading(false);
+            return;
+          }
         }
+
+        setSchoolData(schoolInfo);
+
+        // 해당 학교의 게시물 가져오기
+        const postsRef = collection(db, "posts");
+        const q = query(postsRef, where("schoolId", "==", id));
+        const querySnapshot = await getDocs(q);
+
+        const postsData: Post[] = [];
+        querySnapshot.forEach((doc) => {
+          const postData = doc.data();
+          postsData.push({
+            id: doc.id,
+            title: postData.title,
+            upvote: postData.upvote || 0,
+            downvote: postData.downvote || 0,
+          });
+        });
+        setPosts(postsData);
       } catch (error) {
         console.error("Error fetching school data:", error);
         setNotFound(true);
@@ -104,69 +173,87 @@ const School = () => {
 
   return (
     <div className="grow bg-bg-normal">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* 학교 정보 섹션 */}
-        <div className="p-6 mb-6">
-          <h1 className="text-2xl font-bold text-label-normal mb-2">
-            {schoolData.name}
-          </h1>
-          <p className="text-label-neutral text-md">
-            게시글 {posts.length} | 위치 {schoolData.address}
-          </p>
-        </div>
+      <div className="px-36 py-8 flex gap-5">
+        <div className="flex-1">
+          {/* 학교 정보 섹션 */}
+          <div className="p-6 pl-0 mb-6">
+            <h1
+              className="text-2xl font-bold text-label-normal mb-2 cursor-pointer hover:text-label-assistive transition"
+              onClick={() => navigate("/")}
+            >
+              {schoolData.name}
+            </h1>
+            <p className="text-md">
+              <span className="text-label-neutral">게시글</span>{" "}
+              <span className="text-label-normal pr-5">{posts.length}</span>
+              <span className="text-label-neutral">위치</span>{" "}
+              <span className="text-label-normal">{schoolData.address}</span>
+            </p>
+          </div>
 
-        {/* 글쓰기 버튼 */}
-        <div className="mb-4">
-          <button
-            onClick={handleWriteClick}
-            className="px-6 py-2 bg-label-normal text-white rounded hover:bg-label-assistive transition"
-          >
-            글쓰기
-          </button>
-        </div>
+          {/* 글쓰기 버튼 */}
+          <div className="mb-4">
+            <button
+              onClick={handleWriteClick}
+              className="px-6 py-2 bg-label-normal text-white rounded hover:bg-label-assistive transition"
+            >
+              글쓰기
+            </button>
+          </div>
 
-        {/* 게시물 목록 */}
-        <div className="overflow-hidden">
-          <table className="w-full">
-            <thead className="border-b border-line-normal">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-label-assistive">
-                  제목
-                </th>
-                <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
-                  현상금
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line-normal">
-              {posts.length > 0 ? (
-                posts.map((post) => (
-                  <tr
-                    key={post.id}
-                    onClick={() => handlePostClick(post.id)}
-                    className="hover:bg-fill-neutral cursor-pointer transition"
-                  >
-                    <td className="px-6 py-4 text-sm text-label-normal">
-                      {post.title}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-label-normal text-center">
-                      {post.upvote - post.downvote}₩
+          {/* 게시물 목록 */}
+          <div className="overflow-hidden">
+            <table className="w-full">
+              <thead className="border-b border-line-normal">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-label-assistive">
+                    제목
+                  </th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
+                    현상금
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line-normal">
+                {posts.length > 0 ? (
+                  posts.map((post) => (
+                    <tr
+                      key={post.id}
+                      onClick={() => handlePostClick(post.id)}
+                      className="hover:bg-fill-neutral cursor-pointer transition"
+                    >
+                      <td className="px-6 py-4 text-sm text-label-normal">
+                        {post.title}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-label-normal text-center">
+                        {formatNumber(post.upvote - post.downvote)}₩
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={2}
+                      className="px-6 py-8 text-center text-label-alter"
+                    >
+                      게시글이 없습니다.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={2}
-                    className="px-6 py-8 text-center text-label-alter"
-                  >
-                    게시글이 없습니다.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        {/* 배너 */}
+        <a
+          href="https://www.youtube.com/watch?v=q1ULJ92aldE"
+          className="w-[20%] h-min"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={Banner} alt="" className="w-full" />
+        </a>
       </div>
     </div>
   );
