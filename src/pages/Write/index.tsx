@@ -1,6 +1,8 @@
 import { useParams, useNavigate } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "../../components/Input";
+import { db } from "../../firebase";
+import { doc, getDoc, collection, addDoc } from "firebase/firestore";
 
 const Write = () => {
   const { schoolId } = useParams<{ schoolId: string }>();
@@ -8,31 +10,40 @@ const Write = () => {
   const [title, setTitle] = useState("");
   const [password, setPassword] = useState("");
   const [content, setContent] = useState("");
+  const [schoolName, setSchoolName] = useState("로딩 중...");
 
-  // 학교 이름 매핑
-  const schoolNames: { [key: string]: string } = {
-    "1": "대구소프트웨어마이스터고등학교",
-    "2": "대덕소프트웨어마이스터고등학교",
-    "3": "대구경일고등학교",
-    "4": "대구남대비마이스터고등학교",
-    "5": "대구문화고등학교",
-    "6": "대구대륜고등학교",
-    "7": "대구능인고등학교",
-    "8": "경북대사범대부설고등학교",
-    "9": "XXX고등학교",
-    "10": "AAA고등학교",
-    "11": "BBB고등학교",
-    "12": "CCC고등학교",
-    "13": "DDD고등학교",
-  };
+  // Firebase에서 학교 이름 가져오기
+  useEffect(() => {
+    const fetchSchoolName = async () => {
+      if (!schoolId) {
+        setSchoolName("알 수 없는 학교");
+        return;
+      }
 
-  const schoolName = schoolNames[schoolId || "1"] || "알 수 없는 학교";
+      try {
+        const schoolRef = doc(db, "schools", schoolId);
+        const schoolSnap = await getDoc(schoolRef);
+
+        if (schoolSnap.exists()) {
+          const schoolData = schoolSnap.data();
+          setSchoolName(schoolData.name || "알 수 없는 학교");
+        } else {
+          setSchoolName("알 수 없는 학교");
+        }
+      } catch (error) {
+        console.error("Error fetching school name:", error);
+        setSchoolName("알 수 없는 학교");
+      }
+    };
+
+    fetchSchoolName();
+  }, [schoolId]);
 
   const handleCancel = () => {
     navigate(`/school/${schoolId}`);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title.trim()) {
       alert("제목을 입력해 주세요.");
       return;
@@ -46,20 +57,32 @@ const Write = () => {
       return;
     }
 
-    // 여기에 게시물 등록 로직 추가
-    console.log({ title, password, content, schoolId });
-    
-    // 게시 후 학교 페이지로 이동
-    navigate(`/school/${schoolId}`);
+    try {
+      // Firebase에 게시물 등록
+      await addDoc(collection(db, "posts"), {
+        schoolId: schoolId,
+        title: title,
+        content: content,
+        password: password,
+        upvote: 0,
+        downvote: 0,
+        createdAt: new Date().toISOString(),
+      });
+
+      alert("게시물이 등록되었습니다.");
+      // 게시 후 학교 페이지로 이동
+      navigate(`/school/${schoolId}`);
+    } catch (error) {
+      console.error("Error adding post:", error);
+      alert("게시물 등록에 실패했습니다. 다시 시도해 주세요.");
+    }
   };
 
   return (
     <div className="grow">
       <div className="max-w-5xl px-4 py-8 mx-auto">
         {/* 학교 이름 */}
-        <h1 className="mb-8 text-2xl font-bold text-gray-900">
-          {schoolName}
-        </h1>
+        <h1 className="mb-8 text-2xl font-bold text-gray-900">{schoolName}</h1>
 
         {/* 작성 폼 */}
         <div className="py-8 border-t border-black">
