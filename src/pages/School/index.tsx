@@ -176,7 +176,7 @@ const School = () => {
       <div className="px-36 py-8 flex gap-5">
         <div className="flex-1">
           {/* 학교 정보 섹션 */}
-          <div className="p-6 pl-0 mb-6">
+          <div className="pb-6 mb-6">
             <h1
               className="text-2xl font-bold text-label-normal mb-2 cursor-pointer hover:text-label-assistive transition"
               onClick={() => navigate("/")}
