@@ -1,7 +1,9 @@
 import { useParams, useNavigate } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NotFound from "../NotFound";
 import Input from "../../components/Input";
+import { db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 interface Comment {
   id: number;
@@ -10,13 +12,16 @@ interface Comment {
 }
 
 interface PostData {
-  id: string;
-  schoolId: string;
-  schoolName: string;
   title: string;
   content: string;
-  date: string;
-  reward: string;
+  schoolId: string;
+  upvote: number;
+  downvote: number;
+}
+
+interface SchoolData {
+  name: string;
+  address: string;
 }
 
 const Post = () => {
@@ -24,35 +29,67 @@ const Post = () => {
   const navigate = useNavigate();
   const [commentInput, setCommentInput] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
+  const [postData, setPostData] = useState<PostData | null>(null);
+  const [schoolName, setSchoolName] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  // 임시 게시물 데이터베이스
-  const postsDatabase: { [key: string]: PostData } = {
-    "1": {
-      id: "1",
-      schoolId: "1",
-      schoolName: "대구소프트웨어마이스터고등학교",
-      title: "솔직히 10기",
-      content: "너무 귀엽다.",
-      date: "2025. 11. 18. 22:56:30",
-      reward: "1₩",
-    },
-    "2": {
-      id: "2",
-      schoolId: "1",
-      schoolName: "대구소프트웨어마이스터고등학교",
-      title: "솔직히 10기",
-      content: "정말 귀여운 것 같아요!",
-      date: "2025. 11. 18. 20:30:15",
-      reward: "10M ₩",
-    },
-  };
+  useEffect(() => {
+    const fetchPostData = async () => {
+      if (!id) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const postRef = doc(db, "posts", id);
+        const postSnap = await getDoc(postRef);
+
+        if (postSnap.exists()) {
+          const data = postSnap.data() as PostData;
+          setPostData(data);
+
+          // 학교 정보 가져오기
+          const schoolRef = doc(db, "schools", data.schoolId);
+          const schoolSnap = await getDoc(schoolRef);
+
+          if (schoolSnap.exists()) {
+            const schoolData = schoolSnap.data() as SchoolData;
+            setSchoolName(schoolData.name);
+          }
+        } else {
+          setNotFound(true);
+        }
+      } catch (error) {
+        console.error("Error fetching post data:", error);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPostData();
+  }, [id]);
+
+  // 로딩 중
+  if (loading) {
+    return (
+      <div className="grow flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-2xl">⏳</div>
+          <p className="mt-4 text-gray-600">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   // 게시물이 존재하지 않으면 NotFound 페이지 표시
-  if (!id || !postsDatabase[id]) {
+  if (notFound || !postData) {
     return <NotFound type="post" />;
   }
 
-  const post = postsDatabase[id];
+  const reward = postData.upvote - postData.downvote;
 
   const handleCommentSubmit = () => {
     if (commentInput.trim()) {
@@ -67,7 +104,7 @@ const Post = () => {
   };
 
   const handleBackToSchool = () => {
-    navigate(`/school/${post.schoolId}`);
+    navigate(`/school/${postData.schoolId}`);
   };
 
   return (
@@ -78,23 +115,22 @@ const Post = () => {
             className="mb-8 text-2xl font-bold text-gray-900 transition hover:text-gray-700 cursor-pointer"
             onClick={handleBackToSchool}
           >
-            {post.schoolName}
+            {schoolName}
           </span>
           <div className="flex-1 flex flex-col">
             {/* 게시물 상세 */}
             <div className="flex-1 p-8 border-t border-[#5E5E5E] flex flex-col">
-              {/* 제목과 날짜 */}
+              {/* 제목 */}
               <div className="pb-6 mb-6 border-b border-gray-200">
                 <h1 className="mb-3 text-2xl font-bold text-gray-900">
-                  {post.title}
+                  {postData.title}
                 </h1>
-                <p className="text-sm text-gray-500">{post.date}</p>
               </div>
 
               {/* 내용 */}
               <div className="flex-1 mb-8 overflow-auto">
                 <p className="text-gray-800 whitespace-pre-wrap">
-                  {post.content}
+                  {postData.content}
                 </p>
               </div>
             </div>
@@ -137,7 +173,7 @@ const Post = () => {
             </button>
             <div className="text-center">
               <p className="mb-1 text-sm text-gray-600">현상금</p>
-              <p className="text-3xl font-bold text-gray-900">{post.reward}</p>
+              <p className="text-3xl font-bold text-gray-900">{reward}₩</p>
             </div>
             <button className="p-3 transition bg-gray-100 rounded-full hover:bg-gray-200">
               <svg
