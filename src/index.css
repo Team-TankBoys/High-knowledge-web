@@ -1,22 +1,28 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 @import "tailwindcss";
 
+@font-face {
+	font-family: "Cafe24PROUP";
+	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-1@1.0/Cafe24PROUP.woff2') format('woff2')
+}
+
 @theme {
-  --color-bg-normal: "#FAFAF8";
-  --color-bg-netural: "#F2F2F2";
+  --color-bg-normal: #FAFAF8;
+  --color-bg-netural: #F2F2F2;
 
-  --color-fill-normal: "#E5E5E5";
-  --color-fill-neutral: "#F3F3F3";
-  --color-fill-alter: "#ECECEC";
-  --color-fill-transparents: "rgba(236, 236, 236, 0.5)";
+  --color-fill-normal: #E5E5E5;
+  --color-fill-neutral: #F3F3F3;
+  --color-fill-alter: #ECECEC;
+  --color-fill-transparents: rgba(236, 236, 236, 0.5);
 
-  --color-line-normal: "#DEDEDE";
-  --color-line-neutral: "#B3B3B3";
-  --color-line-alter: "#5E5E5E";
+  --color-line-normal: #DEDEDE;
+  --color-line-neutral: #B3B3B3;
+  --color-line-alter: #5E5E5E;
 
-  --color-label-normal: "#191919";
-  --color-label-assistive: "#323232";
-  --color-label-neutral: "#636363";
-  --color-label-alter: "#9B9B9B";
+  --color-label-normal: #191919;
+  --color-label-assistive: #323232;
+  --color-label-neutral: #636363;
+  --color-label-alter: #9B9B9B;
 }
 
 :root {
