@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import NotFound from "../NotFound";
 import Input from "../../components/Input";
+import { useTranslation } from "react-i18next";
 import { db } from "../../firebase";
 import {
   doc,
@@ -42,6 +43,7 @@ const Post = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [hasVoted, setHasVoted] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -96,7 +98,7 @@ const Post = () => {
       <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-label-neutral">로딩 중...</p>
+          <p className="mt-4 text-label-neutral">{t('post.loading')}</p>
         </div>
       </div>
     );
@@ -123,12 +125,12 @@ const Post = () => {
     if (!id || !postData) return;
 
     if (!passwordInput.trim()) {
-      alert("비밀번호를 입력해 주세요.");
+      alert(t('post.alerts.password_required'));
       return;
     }
 
     if (passwordInput !== postData.password) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert(t('post.alerts.password_mismatch'));
       setPasswordInput("");
       return;
     }
@@ -136,11 +138,11 @@ const Post = () => {
     try {
       const postRef = doc(db, "posts", id);
       await deleteDoc(postRef);
-      alert("게시물이 삭제되었습니다.");
+      alert(t('post.alerts.deleted'));
       navigate(`/school/${postData.schoolId}`);
     } catch (error) {
       console.error("Error deleting post:", error);
-      alert("게시물 삭제에 실패했습니다.");
+      alert(t('post.alerts.delete_failed'));
     }
   };
 
@@ -152,7 +154,7 @@ const Post = () => {
     if (!id) return;
 
     if (hasVoted) {
-      alert("이미 현상금을 조정하셨습니다.");
+      alert(t('post.alerts.already_voted'));
       return;
     }
 
@@ -175,7 +177,7 @@ const Post = () => {
       setHasVoted(true);
     } catch (error) {
       console.error("Error updating upvote:", error);
-      alert("현상금 증가에 실패했습니다.");
+      alert(t('post.alerts.upvote_failed'));
     }
   };
 
@@ -183,7 +185,7 @@ const Post = () => {
     if (!id || !postData) return;
 
     if (hasVoted) {
-      alert("이미 현상금을 조정하셨습니다.");
+      alert(t('post.alerts.already_voted'));
       return;
     }
 
@@ -206,7 +208,7 @@ const Post = () => {
       setHasVoted(true);
     } catch (error) {
       console.error("Error updating downvote:", error);
-      alert("현상금 감소에 실패했습니다.");
+      alert(t('post.alerts.downvote_failed'));
     }
   };
 
@@ -293,7 +295,7 @@ const Post = () => {
                 </svg>
               </button>
               <div className="text-center">
-                <p className="mb-1 text-sm text-label-neutral">현상금</p>
+                <p className="mb-1 text-sm text-label-neutral">{t('post.labels.bounty')}</p>
                 <p className="text-3xl font-bold text-label-normal">
                   {formatNumber(reward)}₩
                 </p>

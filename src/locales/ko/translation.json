@@ -1,0 +1,104 @@
+{
+  "home": {
+    "title": "👋 우리만의 무법지대, 고지식에 오신 걸 환영합니다!",
+    "subtitle": "교내 익명 게시판에서 마음껏 대화해 보세요.",
+    "bullet": {
+      "one": "당신의 이름, 성별, 나이 등에 관여하지 않습니다.",
+      "two": "정보를 요구하지 않습니다.",
+      "three": "하고 싶은 말을 모두 할 수 있습니다."
+    }
+  },
+  "school": {
+    "loading": "로딩 중...",
+    "address_not_found": "주소 정보 없음",
+    "labels": {
+      "posts": "게시글",
+      "location": "위치"
+    },
+    "buttons": {
+      "write": "글쓰기"
+    },
+    "table": {
+      "title": "제목",
+      "date": "작성일자",
+      "reward": "현상금"
+    },
+    "no_posts": "게시글이 없습니다."
+  },
+  "write": {
+    "school_name_loading": "로딩 중...",
+    "unknown_school": "알 수 없는 학교",
+    "placeholders": {
+      "title": "제목을 입력해 주세요.",
+      "password": "사용할 비밀번호를 입력해 주세요.",
+      "content": "본문 내용을 입력해 주세요."
+    },
+    "buttons": {
+      "cancel": "취소",
+      "submit": "글쓰기"
+    },
+    "alerts": {
+      "title_required": "제목을 입력해 주세요.",
+      "password_required": "비밀번호를 입력해 주세요.",
+      "content_required": "본문을 입력해 주세요.",
+      "post_created": "게시물이 등록되었습니다.",
+      "post_failed": "게시물 등록에 실패했습니다. 다시 시도해 주세요."
+    }
+  },
+  "header": {
+    "logo_alt": "High Knowledge 로고"
+  },
+  "footer": {
+    "tagline": "우리만의 무법지대",
+    "contact": {
+      "owner": "대표: 홍지율",
+      "email": "문의: pjmin0923@gmail.com",
+      "phone": "전화번호: 010-9242-7038"
+    }
+  },
+  "schoolList": {
+    "placeholder": "고등학교 이름으로 검색...",
+    "search_button": "검색",
+    "loader": "로딩 중...",
+    "no_data": "데이터가 없습니다."
+  },
+  "post": {
+    "loading": "로딩 중...",
+    "placeholders": {
+      "password": "비밀번호를 입력해 주세요."
+    },
+    "buttons": {
+      "delete": "삭제하기"
+    },
+    "alerts": {
+      "password_required": "비밀번호를 입력해 주세요.",
+      "password_mismatch": "비밀번호가 일치하지 않습니다.",
+      "deleted": "게시물이 삭제되었습니다.",
+      "delete_failed": "게시물 삭제에 실패했습니다.",
+      "already_voted": "이미 현상금을 조정하셨습니다.",
+      "upvote_failed": "현상금 증가에 실패했습니다.",
+      "downvote_failed": "현상금 감소에 실패했습니다."
+    },
+    "labels": {
+      "bounty": "현상금"
+    }
+  },
+  "notFound": {
+    "school": {
+      "title": "학교를 찾을 수 없습니다",
+      "description": "존재하지 않는 학교입니다."
+    },
+    "post": {
+      "title": "게시물을 찾을 수 없습니다",
+      "description": "존재하지 않는 게시물이거나 삭제된 게시물입니다."
+    },
+    "default": {
+      "title": "페이지를 찾을 수 없습니다",
+      "description": "요청하신 페이지가 존재하지 않습니다."
+    },
+    "buttons": {
+      "back": "이전 페이지로",
+      "home": "홈으로 돌아가기"
+    }
+  }
+}

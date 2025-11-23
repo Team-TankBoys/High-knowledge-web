@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import NotFound from "../NotFound";
+import { useTranslation } from "react-i18next";
 import { db } from "../../firebase";
 import {
   doc,
@@ -55,6 +56,7 @@ const School = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { t } = useTranslation();
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
@@ -172,7 +174,7 @@ const School = () => {
       <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-label-neutral">로딩 중...</p>
+          <p className="mt-4 text-label-neutral">{t('school.loading')}</p>
         </div>
       </div>
     );
@@ -196,9 +198,9 @@ const School = () => {
               {schoolData.name}
             </h1>
             <p className="text-md">
-              <span className="text-label-neutral">게시글</span>{" "}
+              <span className="text-label-neutral">{t('school.labels.posts')}</span>{" "}
               <span className="text-label-normal pr-5">{posts.length}</span>
-              <span className="text-label-neutral">위치</span>{" "}
+              <span className="text-label-neutral">{t('school.labels.location')}</span>{" "}
               <span className="text-label-normal">{schoolData.address}</span>
             </p>
           </div>
@@ -209,7 +211,7 @@ const School = () => {
               onClick={handleWriteClick}
               className="px-6 py-2 bg-label-normal text-white rounded hover:bg-label-assistive transition"
             >
-              글쓰기
+              {t('school.buttons.write')}
             </button>
           </div>
 
@@ -219,13 +221,13 @@ const School = () => {
               <thead className="border-b border-line-normal">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-medium text-label-assistive">
-                    제목
+                    {t('school.table.title')}
                   </th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
-                    작성일자
+                    {t('school.table.date')}
                   </th>
                   <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
-                    현상금
+                    {t('school.table.reward')}
                   </th>
                 </tr>
               </thead>
@@ -254,7 +256,7 @@ const School = () => {
                       colSpan={3}
                       className="px-6 py-8 text-center text-label-alter"
                     >
-                      게시글이 없습니다.
+                      {t('school.no_posts')}
                     </td>
                   </tr>
                 )}
