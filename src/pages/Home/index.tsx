@@ -1,4 +1,5 @@
 import SchoolList from "../../components/home/SchoolList";
+import Banner from "../../assets/vertical-meme.webp";
 
 const Home = () => {
   
@@ -21,8 +22,15 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="flex self-stretch">
-        <SchoolList/>          
+      <div className="flex gap-5 w-full">
+        <SchoolList />
+        <a
+          href="https://youtu.be/yH88qRmgkGI?si=6IwEPZvOlfkk1Ogv"
+          className="h-min w-[30%]"
+          target="_blank"
+        >
+          <img src={Banner} alt="" className="w-full" />
+        </a>
       </div>
     </div>
   );
