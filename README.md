@@ -1,73 +1,19 @@
-# React + TypeScript + Vite
+## 프로젝트 < 고지식 > 스타일 가이드
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 컬러
+- Fill, Background, Label, Line 의 네 가지 속성 분류를 제공합니다.
+- 해당 분류 내에서, 사용 빈도와 사용처에 따라 세부적으로 속성을 제공합니다.
+- ( normal, netural, alter 등 )
+- 해당 분류에서 적절한 색을 찾지 못한다면, tailwind의 기본 제공 색상을 최대한 활용합니다. ( 고정 HEX 값은 사용하지 않습니다. )
 
-Currently, two official plugins are available:
+### UI
+- 기본적으로 사용되는 헤더 및 푸터는 레이아웃으로써, 수정 및 덮어씌우기, 사용하지 않기 등은 권장하지 않습니다.
+- 주로 사용되는 요소인 Input의 UI 스타일은 정의되어 있으며, 속성으로 커스텀 handler와 placeholder를 제공하여 원하는 방식으로 사용이 가능합니다.
+  - 반드시 placeholder는 대상 페이지 등에 맞게끔 지정해야 합니다.
+- boder-radius 속성은 주로 4px을 사용하되, 경우에 따라 8px까지 허용합니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 폰트
+- 폰트는 기본적으로 " Pretendard " 를 사용합니다.
+- 강조 등의 사유로 " Cafe24 PRO UP " 을 사용할 수 있습니다.
+- 16px을 기본 크기로 사용하며, tailwind의 " text- " 속성을 통해 유연하게 적용하여 사용할 수 있습니다.
+- 40px을 넘는 텍스트는 가시성이 좋지 않고 과도하게 눈에 띄므로, 권장하지 않습니다.
