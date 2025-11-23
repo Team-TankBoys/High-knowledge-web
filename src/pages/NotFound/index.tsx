@@ -30,7 +30,7 @@ const NotFound = ({ type }: NotFoundProps) => {
   const message = getMessage();
 
   return (
-    <div className="grow flex items-center justify-center px-4">
+    <div className="grow flex items-center justify-center px-36">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
           <span className="text-8xl">😕</span>
