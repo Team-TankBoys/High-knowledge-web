@@ -30,25 +30,25 @@ const NotFound = ({ type }: NotFoundProps) => {
   const message = getMessage();
 
   return (
-    <div className="grow bg-gray-50 flex items-center justify-center px-4">
+    <div className="grow flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
           <span className="text-8xl">😕</span>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl font-bold text-label-normal mb-4">
           {message.title}
         </h1>
-        <p className="text-gray-600 mb-8">{message.description}</p>
+        <p className="text-label-assistive mb-8">{message.description}</p>
         <div className="space-y-3">
           <button
             onClick={() => navigate(-1)}
-            className="w-full px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium"
+            className="w-full px-6 py-3 bg-fill-normal text-label-normal rounded-lg hover:bg-fill-alter transition font-medium cursor-pointer"
           >
             이전 페이지로
           </button>
           <button
             onClick={() => navigate("/")}
-            className="w-full px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-medium"
+            className="w-full px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition font-medium cursor-pointer"
           >
             홈으로 돌아가기
           </button>
