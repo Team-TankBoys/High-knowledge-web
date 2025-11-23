@@ -88,10 +88,10 @@ const School = () => {
   // 로딩 중
   if (loading) {
     return (
-      <div className="grow flex items-center justify-center">
+      <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-gray-600">로딩 중...</p>
+          <p className="mt-4 text-label-neutral">로딩 중...</p>
         </div>
       </div>
     );
@@ -103,14 +103,14 @@ const School = () => {
   }
 
   return (
-    <div className="grow">
+    <div className="grow bg-bg-normal">
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* 학교 정보 섹션 */}
-        <div className=" p-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="p-6 mb-6">
+          <h1 className="text-2xl font-bold text-label-normal mb-2">
             {schoolData.name}
           </h1>
-          <p className="text-gray-600 text-md">
+          <p className="text-label-neutral text-md">
             게시글 {posts.length} | 위치 {schoolData.address}
           </p>
         </div>
@@ -119,37 +119,37 @@ const School = () => {
         <div className="mb-4">
           <button
             onClick={handleWriteClick}
-            className="px-6 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition"
+            className="px-6 py-2 bg-label-normal text-white rounded hover:bg-label-assistive transition"
           >
             글쓰기
           </button>
         </div>
 
         {/* 게시물 목록 */}
-        <div className=" overflow-hidden">
+        <div className="overflow-hidden">
           <table className="w-full">
-            <thead className=" border-b border-gray-200">
+            <thead className="border-b border-line-normal">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                <th className="px-6 py-3 text-left text-sm font-medium text-label-assistive">
                   제목
                 </th>
-                <th className="px-6 py-3 text-center text-sm font-medium text-gray-700">
+                <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
                   현상금
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-line-normal">
               {posts.length > 0 ? (
                 posts.map((post) => (
                   <tr
                     key={post.id}
                     onClick={() => handlePostClick(post.id)}
-                    className="hover:bg-gray-50 cursor-pointer transition"
+                    className="hover:bg-fill-neutral cursor-pointer transition"
                   >
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-label-normal">
                       {post.title}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-center">
+                    <td className="px-6 py-4 text-sm text-label-normal text-center">
                       {post.upvote - post.downvote}₩
                     </td>
                   </tr>
@@ -158,7 +158,7 @@ const School = () => {
                 <tr>
                   <td
                     colSpan={2}
-                    className="px-6 py-8 text-center text-gray-500"
+                    className="px-6 py-8 text-center text-label-alter"
                   >
                     게시글이 없습니다.
                   </td>

@@ -75,10 +75,10 @@ const Post = () => {
   // 로딩 중
   if (loading) {
     return (
-      <div className="grow flex items-center justify-center">
+      <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-gray-600">로딩 중...</p>
+          <p className="mt-4 text-label-neutral">로딩 중...</p>
         </div>
       </div>
     );
@@ -108,28 +108,28 @@ const Post = () => {
   };
 
   return (
-    <div className="h-full grow flex">
+    <div className="h-full grow flex bg-bg-normal">
       <div className="grow max-w-5xl px-4 py-8 mx-auto flex flex-col justify-between">
         <div className="flex flex-col">
           <span
-            className="mb-8 text-2xl font-bold text-gray-900 transition hover:text-gray-700 cursor-pointer"
+            className="mb-8 text-2xl font-bold text-label-normal transition hover:text-label-assistive cursor-pointer"
             onClick={handleBackToSchool}
           >
             {schoolName}
           </span>
           <div className="flex-1 flex flex-col">
             {/* 게시물 상세 */}
-            <div className="flex-1 p-8 border-t border-[#5E5E5E] flex flex-col">
+            <div className="flex-1 p-8 border-t border-line-alter flex flex-col">
               {/* 제목 */}
-              <div className="pb-6 mb-6 border-b border-gray-200">
-                <h1 className="mb-3 text-2xl font-bold text-gray-900">
+              <div className="pb-6 mb-6 border-b border-line-normal">
+                <h1 className="mb-3 text-2xl font-bold text-label-normal">
                   {postData.title}
                 </h1>
               </div>
 
               {/* 내용 */}
               <div className="flex-1 mb-8 overflow-auto">
-                <p className="text-gray-800 whitespace-pre-wrap">
+                <p className="text-label-assistive whitespace-pre-wrap">
                   {postData.content}
                 </p>
               </div>
@@ -137,7 +137,7 @@ const Post = () => {
           </div>
         </div>
         {/* 댓글 입력 영역 */}
-        <div className="pt-6 border-t border-gray-200 flex flex-col justify-center items-center">
+        <div className="pt-6 border-t border-line-normal flex flex-col justify-center items-center">
           <div className="flex gap-3 max-w-2xl">
             <div className="flex-1">
               <Input
@@ -156,9 +156,9 @@ const Post = () => {
 
           {/* 현상금 표시 */}
           <div className="flex items-center justify-center gap-4 py-6">
-            <button className="p-3 transition bg-gray-100 rounded-full hover:bg-gray-200">
+            <button className="p-3 transition bg-fill-neutral rounded-full hover:bg-fill-alter">
               <svg
-                className="w-6 h-6 text-gray-600"
+                className="w-6 h-6 text-label-neutral"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -172,12 +172,12 @@ const Post = () => {
               </svg>
             </button>
             <div className="text-center">
-              <p className="mb-1 text-sm text-gray-600">현상금</p>
-              <p className="text-3xl font-bold text-gray-900">{reward}₩</p>
+              <p className="mb-1 text-sm text-label-neutral">현상금</p>
+              <p className="text-3xl font-bold text-label-normal">{reward}₩</p>
             </div>
-            <button className="p-3 transition bg-gray-100 rounded-full hover:bg-gray-200">
+            <button className="p-3 transition bg-fill-neutral rounded-full hover:bg-fill-alter">
               <svg
-                className="w-6 h-6 text-gray-600"
+                className="w-6 h-6 text-label-neutral"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
