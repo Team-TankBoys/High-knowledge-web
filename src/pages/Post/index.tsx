@@ -221,40 +221,15 @@ const Post = () => {
   const handleDownvote = async () => {
     if (!id || !postData) return;
 
-    if (hasVoted) {
-      alert(t("post.alerts.already_voted"));
-      return;
-    }
+    // 현상금이 0 이하로 내려가지 않도록 방지
+    const currentReward = postData.upvote - postData.downvote;
+    if (currentReward <= 0) return;
 
-    try {
-      const postRef = doc(db, "posts", id);
-      await updateDoc(postRef, {
-        downvote: increment(1),
-      });
+    // 로컬에서 즉시 UI 업데이트
+    setPostData((prev) =>
+      prev ? { ...prev, downvote: prev.downvote + 1 } : null
+    );
 
-      // UI 업데이트
-      setPostData((prev) =>
-        prev ? { ...prev, downvote: prev.downvote + 1 } : null
-      );
-      // 현상금이 0 이하로 내려가지 않도록 방지
-      const currentReward = postData.upvote - postData.downvote;
-      if (currentReward <= 0) return;
-
-      // 로컬에서 즉시 UI 업데이트
-      setPostData((prev) =>
-        prev ? { ...prev, downvote: prev.downvote + 1 } : null
-      );
-
-      // localStorage에 투표 기록 저장
-      const votedPosts = localStorage.getItem("votedPosts");
-      const votedPostsArray = votedPosts ? JSON.parse(votedPosts) : [];
-      votedPostsArray.push(id);
-      localStorage.setItem("votedPosts", JSON.stringify(votedPostsArray));
-      setHasVoted(true);
-    } catch (error) {
-      console.error("Error updating downvote:", error);
-      alert(t("post.alerts.downvote_failed"));
-    }
     // 대기 중인 downvote 카운트 증가
     setPendingDownvotes((prev) => prev + 1);
   };
