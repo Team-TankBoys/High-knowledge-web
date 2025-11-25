@@ -15,7 +15,7 @@ const Header = () => {
         <Link to={"/"}>
           <img src={logo} alt={t("header.logo_alt")} className="h-5 md:h-6" />
         </Link>
-        <div className="flex gap-2 md:gap-0 md:flex-col">
+        <div className="flex gap-2 md:flex-col md:gap-1">
           <button
             onClick={() => changeLanguage("en")}
             className="text-xs md:text-sm px-2 py-1 hover:text-label-assistive transition"
