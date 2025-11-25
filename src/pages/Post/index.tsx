@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import NotFound from "../NotFound";
 import Input from "../../components/Input";
+import { useTranslation } from "react-i18next";
 import { db } from "../../firebase";
 import {
   doc,
@@ -34,6 +35,8 @@ const Post = () => {
   const [schoolName, setSchoolName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
+  const { t } = useTranslation();
   const [pendingUpvotes, setPendingUpvotes] = useState(0);
   const [pendingDownvotes, setPendingDownvotes] = useState(0);
   const [debounceTimer, setDebounceTimer] = useState<number | null>(null);
@@ -127,7 +130,7 @@ const Post = () => {
       <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-label-neutral">로딩 중...</p>
+          <p className="mt-4 text-label-neutral">{t('post.loading')}</p>
         </div>
       </div>
     );
@@ -154,12 +157,12 @@ const Post = () => {
     if (!id || !postData) return;
 
     if (!passwordInput.trim()) {
-      alert("비밀번호를 입력해 주세요.");
+      alert(t('post.alerts.password_required'));
       return;
     }
 
     if (passwordInput !== postData.password) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert(t('post.alerts.password_mismatch'));
       setPasswordInput("");
       return;
     }
@@ -167,11 +170,11 @@ const Post = () => {
     try {
       const postRef = doc(db, "posts", id);
       await deleteDoc(postRef);
-      alert("게시물이 삭제되었습니다.");
+      alert(t('post.alerts.deleted'));
       navigate(`/school/${postData.schoolId}`);
     } catch (error) {
       console.error("Error deleting post:", error);
-      alert("게시물 삭제에 실패했습니다.");
+      alert(t('post.alerts.delete_failed'));
     }
   };
 
@@ -182,6 +185,32 @@ const Post = () => {
   const handleUpvote = async () => {
     if (!id) return;
 
+    if (hasVoted) {
+      alert(t('post.alerts.already_voted'));
+      return;
+    }
+
+    try {
+      const postRef = doc(db, "posts", id);
+      await updateDoc(postRef, {
+        upvote: increment(1),
+      });
+
+      // UI 업데이트
+      setPostData((prev) =>
+        prev ? { ...prev, upvote: prev.upvote + 1 } : null
+      );
+
+      // localStorage에 투표 기록 저장
+      const votedPosts = localStorage.getItem("votedPosts");
+      const votedPostsArray = votedPosts ? JSON.parse(votedPosts) : [];
+      votedPostsArray.push(id);
+      localStorage.setItem("votedPosts", JSON.stringify(votedPostsArray));
+      setHasVoted(true);
+    } catch (error) {
+      console.error("Error updating upvote:", error);
+      alert(t('post.alerts.upvote_failed'));
+    }
     // 로컬에서 즉시 UI 업데이트
     setPostData((prev) => (prev ? { ...prev, upvote: prev.upvote + 1 } : null));
 
@@ -192,6 +221,21 @@ const Post = () => {
   const handleDownvote = async () => {
     if (!id || !postData) return;
 
+    if (hasVoted) {
+      alert(t('post.alerts.already_voted'));
+      return;
+    }
+
+    try {
+      const postRef = doc(db, "posts", id);
+      await updateDoc(postRef, {
+        downvote: increment(1),
+      });
+
+      // UI 업데이트
+      setPostData((prev) =>
+        prev ? { ...prev, downvote: prev.downvote + 1 } : null
+      );
     // 현상금이 0 이하로 내려가지 않도록 방지
     const currentReward = postData.upvote - postData.downvote;
     if (currentReward <= 0) return;
@@ -201,6 +245,16 @@ const Post = () => {
       prev ? { ...prev, downvote: prev.downvote + 1 } : null
     );
 
+      // localStorage에 투표 기록 저장
+      const votedPosts = localStorage.getItem("votedPosts");
+      const votedPostsArray = votedPosts ? JSON.parse(votedPosts) : [];
+      votedPostsArray.push(id);
+      localStorage.setItem("votedPosts", JSON.stringify(votedPostsArray));
+      setHasVoted(true);
+    } catch (error) {
+      console.error("Error updating downvote:", error);
+      alert(t('post.alerts.downvote_failed'));
+    }
     // 대기 중인 downvote 카운트 증가
     setPendingDownvotes((prev) => prev + 1);
   };
@@ -283,7 +337,7 @@ const Post = () => {
                 </svg>
               </button>
               <div className="text-center">
-                <p className="mb-1 text-sm text-label-neutral">현상금</p>
+                <p className="mb-1 text-sm text-label-neutral">{t('post.labels.bounty')}</p>
                 <p className="text-3xl font-bold text-label-normal">
                   {formatNumber(reward)}₩
                 </p>

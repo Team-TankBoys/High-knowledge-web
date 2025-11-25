@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Input from "../../Input";
+import { useTranslation } from "react-i18next";
 import SchoolItem from "../SchoolItem";
 import axios, { type AxiosResponse } from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -82,18 +83,20 @@ const SchoolList = () => {
     await fetchData(true); // 새로운 검색
   };
 
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col w-full gap-5">
       <Input
         value={searchSchool}
         setValue={setSearchSchool}
-        placeholder="고등학교 이름으로 검색..."
+        placeholder={t('schoolList.placeholder')}
       />
       <button
         onClick={handleSearch}
         className="px-4 py-2 bg-black text-white rounded"
       >
-        검색
+        {t('schoolList.search_button')}
       </button>
       <div>
         <InfiniteScroll
@@ -101,8 +104,8 @@ const SchoolList = () => {
           next={() => setDataIndex((prev) => prev + 1)}
           style={{ display: "flex", flexDirection: "column" }}
           hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          endMessage={<p>데이터가 없습니다.</p>}
+          loader={<h4>{t('schoolList.loader')}</h4>}
+          endMessage={<p>{t('schoolList.no_data')}</p>}
         >
           {schoolData.map((item) => (
             <SchoolItem key={item.id} name={item.name} id={item.id} />

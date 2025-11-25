@@ -1,0 +1,104 @@
+{
+  "home": {
+    "title": "👋 Welcome to High Knowledge — our place to speak freely!",
+    "subtitle": "Talk freely on the campus anonymous board.",
+    "bullet": {
+      "one": "We don't ask for your name, gender, age, or other personal details.",
+      "two": "We don't request personal information.",
+      "three": "You can say whatever you want."
+    }
+  },
+  "school": {
+    "loading": "Loading...",
+    "address_not_found": "No address available",
+    "labels": {
+      "posts": "Posts",
+      "location": "Location"
+    },
+    "buttons": {
+      "write": "Write"
+    },
+    "table": {
+      "title": "Title",
+      "date": "Date",
+      "reward": "Bounty"
+    },
+    "no_posts": "No posts yet."
+  },
+  "write": {
+    "school_name_loading": "Loading...",
+    "unknown_school": "Unknown school",
+    "placeholders": {
+      "title": "Please enter a title.",
+      "password": "Please enter a password.",
+      "content": "Please enter the content."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Post"
+    },
+    "alerts": {
+      "title_required": "Please enter a title.",
+      "password_required": "Please enter a password.",
+      "content_required": "Please enter the content.",
+      "post_created": "Your post has been created.",
+      "post_failed": "Failed to create the post. Please try again."
+    }
+  },
+  "header": {
+    "logo_alt": "High Knowledge logo"
+  },
+  "footer": {
+    "tagline": "Our own lawless zone",
+    "contact": {
+      "owner": "Representative: Hong Ji-yul",
+      "email": "Contact: pjmin0923@gmail.com",
+      "phone": "Phone: 010-9242-7038"
+    }
+  },
+  "schoolList": {
+    "placeholder": "Search by high school name...",
+    "search_button": "Search",
+    "loader": "Loading...",
+    "no_data": "No data."
+  },
+  "post": {
+    "loading": "Loading...",
+    "placeholders": {
+      "password": "Please enter a password."
+    },
+    "buttons": {
+      "delete": "Delete"
+    },
+    "alerts": {
+      "password_required": "Please enter a password.",
+      "password_mismatch": "Password does not match.",
+      "deleted": "The post has been deleted.",
+      "delete_failed": "Failed to delete the post.",
+      "already_voted": "You have already adjusted the bounty.",
+      "upvote_failed": "Failed to increase the bounty.",
+      "downvote_failed": "Failed to decrease the bounty."
+    },
+    "labels": {
+      "bounty": "Bounty"
+    }
+  },
+  "notFound": {
+    "school": {
+      "title": "School not found",
+      "description": "The specified school does not exist."
+    },
+    "post": {
+      "title": "Post not found",
+      "description": "The post does not exist or has been deleted."
+    },
+    "default": {
+      "title": "Page not found",
+      "description": "The requested page does not exist."
+    },
+    "buttons": {
+      "back": "Go back",
+      "home": "Go home"
+    }
+  }
+}
