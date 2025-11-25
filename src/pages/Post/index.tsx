@@ -35,7 +35,6 @@ const Post = () => {
   const [schoolName, setSchoolName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [hasVoted, setHasVoted] = useState(false);
   const { t } = useTranslation();
   const [pendingUpvotes, setPendingUpvotes] = useState(0);
   const [pendingDownvotes, setPendingDownvotes] = useState(0);
@@ -185,32 +184,6 @@ const Post = () => {
   const handleUpvote = async () => {
     if (!id) return;
 
-    if (hasVoted) {
-      alert(t("post.alerts.already_voted"));
-      return;
-    }
-
-    try {
-      const postRef = doc(db, "posts", id);
-      await updateDoc(postRef, {
-        upvote: increment(1),
-      });
-
-      // UI 업데이트
-      setPostData((prev) =>
-        prev ? { ...prev, upvote: prev.upvote + 1 } : null
-      );
-
-      // localStorage에 투표 기록 저장
-      const votedPosts = localStorage.getItem("votedPosts");
-      const votedPostsArray = votedPosts ? JSON.parse(votedPosts) : [];
-      votedPostsArray.push(id);
-      localStorage.setItem("votedPosts", JSON.stringify(votedPostsArray));
-      setHasVoted(true);
-    } catch (error) {
-      console.error("Error updating upvote:", error);
-      alert(t("post.alerts.upvote_failed"));
-    }
     // 로컬에서 즉시 UI 업데이트
     setPostData((prev) => (prev ? { ...prev, upvote: prev.upvote + 1 } : null));
 
