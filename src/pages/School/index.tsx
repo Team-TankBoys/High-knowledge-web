@@ -148,6 +148,14 @@ const School = () => {
             createdAt: postData.createdAt || new Date().toISOString(),
           });
         });
+
+        // 최신순으로 정렬
+        postsData.sort((a, b) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
+
         setPosts(postsData);
       } catch (error) {
         console.error("Error fetching school data:", error);
