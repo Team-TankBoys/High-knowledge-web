@@ -71,7 +71,7 @@ const SchoolList = () => {
   useEffect(() => {
     if (!didMount.current) {
       fetchData();
-      didMount.current = true
+      didMount.current = true;
     }
     if (dataIndex !== 1) fetchData();
   }, [dataIndex]);
@@ -90,13 +90,16 @@ const SchoolList = () => {
       <Input
         value={searchSchool}
         setValue={setSearchSchool}
-        placeholder={t('schoolList.placeholder')}
+        placeholder={t("schoolList.placeholder")}
       />
+      <span className="text-xs md:text-sm text-label-neutral">
+        검색결과가 나오지 않을 수 있으니 다시 시도해보세요
+      </span>
       <button
         onClick={handleSearch}
         className="px-4 py-2 bg-black text-white rounded"
       >
-        {t('schoolList.search_button')}
+        {t("schoolList.search_button")}
       </button>
       <div>
         <InfiniteScroll
@@ -104,8 +107,8 @@ const SchoolList = () => {
           next={() => setDataIndex((prev) => prev + 1)}
           style={{ display: "flex", flexDirection: "column" }}
           hasMore={hasMore}
-          loader={<h4>{t('schoolList.loader')}</h4>}
-          endMessage={<p>{t('schoolList.no_data')}</p>}
+          loader={<h4>{t("schoolList.loader")}</h4>}
+          endMessage={<p>{t("schoolList.no_data")}</p>}
         >
           {schoolData.map((item) => (
             <SchoolItem key={item.id} name={item.name} id={item.id} />
