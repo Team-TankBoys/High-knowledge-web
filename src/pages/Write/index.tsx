@@ -18,7 +18,7 @@ const Write = () => {
   useEffect(() => {
     const fetchSchoolName = async () => {
       if (!schoolId) {
-        setSchoolName(t('write.unknown_school'));
+        setSchoolName(t("write.unknown_school"));
         return;
       }
 
@@ -26,11 +26,11 @@ const Write = () => {
         const schoolRef = doc(db, "schools", schoolId);
         const schoolSnap = await getDoc(schoolRef);
 
-          if (schoolSnap.exists()) {
+        if (schoolSnap.exists()) {
           const schoolData = schoolSnap.data();
-          setSchoolName(schoolData.name || t('write.unknown_school'));
+          setSchoolName(schoolData.name || t("write.unknown_school"));
         } else {
-          setSchoolName(t('write.unknown_school'));
+          setSchoolName(t("write.unknown_school"));
         }
       } catch (error) {
         console.error("Error fetching school name:", error);
@@ -47,15 +47,15 @@ const Write = () => {
 
   const handleSubmit = async () => {
     if (!title.trim()) {
-      alert(t('write.alerts.title_required'));
+      alert(t("write.alerts.title_required"));
       return;
     }
     if (!password.trim()) {
-      alert(t('write.alerts.password_required'));
+      alert(t("write.alerts.password_required"));
       return;
     }
     if (!content.trim()) {
-      alert(t('write.alerts.content_required'));
+      alert(t("write.alerts.content_required"));
       return;
     }
 
@@ -71,35 +71,37 @@ const Write = () => {
         createdAt: new Date().toISOString(),
       });
 
-      alert(t('write.alerts.post_created'));
+      alert(t("write.alerts.post_created"));
       // 게시 후 학교 페이지로 이동
       navigate(`/school/${schoolId}`);
     } catch (error) {
       console.error("Error adding post:", error);
-      alert(t('write.alerts.post_failed'));
+      alert(t("write.alerts.post_failed"));
     }
   };
 
   return (
     <div className="grow">
-      <div className="max-w-5xl px-4 py-8 mx-auto">
+      <div className="max-w-5xl px-4 md:px-8 py-8 mx-auto">
         {/* 학교 이름 */}
-        <h1 className="mb-8 text-2xl font-bold text-gray-900">{schoolName}</h1>
+        <h1 className="mb-8 text-xl md:text-2xl font-bold text-gray-900 wrap-break-word">
+          {schoolName}
+        </h1>
 
         {/* 작성 폼 */}
         <div className="py-8 border-t border-black">
           {/* 제목과 비밀번호 입력 */}
           <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
             <div>
-                <Input
-                placeholder={t('write.placeholders.title')}
+              <Input
+                placeholder={t("write.placeholders.title")}
                 value={title}
                 setValue={setTitle}
               />
             </div>
             <div>
               <Input
-                placeholder={t('write.placeholders.password')}
+                placeholder={t("write.placeholders.password")}
                 value={password}
                 setValue={setPassword}
               />
@@ -109,10 +111,10 @@ const Write = () => {
           {/* 본문 입력 */}
           <div className="mb-6">
             <textarea
-              placeholder={t('write.placeholders.content')}
+              placeholder={t("write.placeholders.content")}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded resize-none h-96 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 text-sm md:text-base border border-gray-300 rounded resize-none h-64 md:h-96 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -120,15 +122,15 @@ const Write = () => {
           <div className="flex justify-end gap-3">
             <button
               onClick={handleCancel}
-              className="px-8 py-3 font-medium text-gray-700 transition bg-gray-200 rounded hover:bg-gray-300"
+              className="px-6 md:px-8 py-3 text-sm md:text-base font-medium text-gray-700 transition bg-gray-200 rounded hover:bg-gray-300"
             >
-              {t('write.buttons.cancel')}
+              {t("write.buttons.cancel")}
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-3 font-medium text-white transition bg-black rounded hover:bg-gray-800"
+              className="px-6 md:px-8 py-3 text-sm md:text-base font-medium text-white transition bg-black rounded hover:bg-gray-800"
             >
-              {t('write.buttons.submit')}
+              {t("write.buttons.submit")}
             </button>
           </div>
         </div>
