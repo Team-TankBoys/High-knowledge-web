@@ -130,7 +130,7 @@ const Post = () => {
       <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-label-neutral">{t('post.loading')}</p>
+          <p className="mt-4 text-label-neutral">{t("post.loading")}</p>
         </div>
       </div>
     );
@@ -157,12 +157,12 @@ const Post = () => {
     if (!id || !postData) return;
 
     if (!passwordInput.trim()) {
-      alert(t('post.alerts.password_required'));
+      alert(t("post.alerts.password_required"));
       return;
     }
 
     if (passwordInput !== postData.password) {
-      alert(t('post.alerts.password_mismatch'));
+      alert(t("post.alerts.password_mismatch"));
       setPasswordInput("");
       return;
     }
@@ -170,11 +170,11 @@ const Post = () => {
     try {
       const postRef = doc(db, "posts", id);
       await deleteDoc(postRef);
-      alert(t('post.alerts.deleted'));
+      alert(t("post.alerts.deleted"));
       navigate(`/school/${postData.schoolId}`);
     } catch (error) {
       console.error("Error deleting post:", error);
-      alert(t('post.alerts.delete_failed'));
+      alert(t("post.alerts.delete_failed"));
     }
   };
 
@@ -186,7 +186,7 @@ const Post = () => {
     if (!id) return;
 
     if (hasVoted) {
-      alert(t('post.alerts.already_voted'));
+      alert(t("post.alerts.already_voted"));
       return;
     }
 
@@ -209,7 +209,7 @@ const Post = () => {
       setHasVoted(true);
     } catch (error) {
       console.error("Error updating upvote:", error);
-      alert(t('post.alerts.upvote_failed'));
+      alert(t("post.alerts.upvote_failed"));
     }
     // 로컬에서 즉시 UI 업데이트
     setPostData((prev) => (prev ? { ...prev, upvote: prev.upvote + 1 } : null));
@@ -222,7 +222,7 @@ const Post = () => {
     if (!id || !postData) return;
 
     if (hasVoted) {
-      alert(t('post.alerts.already_voted'));
+      alert(t("post.alerts.already_voted"));
       return;
     }
 
@@ -236,14 +236,14 @@ const Post = () => {
       setPostData((prev) =>
         prev ? { ...prev, downvote: prev.downvote + 1 } : null
       );
-    // 현상금이 0 이하로 내려가지 않도록 방지
-    const currentReward = postData.upvote - postData.downvote;
-    if (currentReward <= 0) return;
+      // 현상금이 0 이하로 내려가지 않도록 방지
+      const currentReward = postData.upvote - postData.downvote;
+      if (currentReward <= 0) return;
 
-    // 로컬에서 즉시 UI 업데이트
-    setPostData((prev) =>
-      prev ? { ...prev, downvote: prev.downvote + 1 } : null
-    );
+      // 로컬에서 즉시 UI 업데이트
+      setPostData((prev) =>
+        prev ? { ...prev, downvote: prev.downvote + 1 } : null
+      );
 
       // localStorage에 투표 기록 저장
       const votedPosts = localStorage.getItem("votedPosts");
@@ -253,7 +253,7 @@ const Post = () => {
       setHasVoted(true);
     } catch (error) {
       console.error("Error updating downvote:", error);
-      alert(t('post.alerts.downvote_failed'));
+      alert(t("post.alerts.downvote_failed"));
     }
     // 대기 중인 downvote 카운트 증가
     setPendingDownvotes((prev) => prev + 1);
@@ -261,24 +261,24 @@ const Post = () => {
 
   return (
     <div className="h-full grow flex bg-bg-normal">
-      <div className="grow  px-36 py-8 mx-auto gap-5">
+      <div className="grow px-4 md:px-12 lg:px-36 py-8 mx-auto gap-5">
         <div className="flex h-full flex-col justify-between">
           <div className="flex flex-col">
             <span
-              className="mb-8 text-2xl font-bold text-label-normal transition hover:text-label-assistive cursor-pointer"
+              className="mb-8 text-xl md:text-2xl font-bold text-label-normal transition hover:text-label-assistive cursor-pointer break-words"
               onClick={handleBackToSchool}
             >
               {schoolName}
             </span>
             <div className="flex-1 flex flex-col">
               {/* 게시물 상세 */}
-              <div className="flex-1 p-8 pl-0 border-t border-line-alter flex flex-col">
+              <div className="flex-1 p-4 md:p-8 pl-0 border-t border-line-alter flex flex-col">
                 {/* 제목 */}
-                <div className="pl-5 pb-6 mb-6 border-b border-line-normal">
-                  <h1 className="mb-3 text-2xl font-bold text-label-normal">
+                <div className="pl-3 md:pl-5 pb-6 mb-6 border-b border-line-normal">
+                  <h1 className="mb-3 text-xl md:text-2xl font-bold text-label-normal break-words">
                     {postData.title}
                   </h1>
-                  <p className="text-sm text-label-neutral">
+                  <p className="text-xs md:text-sm text-label-neutral">
                     {new Date(postData.createdAt).toLocaleString("ko-KR", {
                       year: "numeric",
                       month: "long",
@@ -290,8 +290,8 @@ const Post = () => {
                 </div>
 
                 {/* 내용 */}
-                <div className="flex-1 pl-5 mb-8 overflow-auto">
-                  <p className="text-label-assistive whitespace-pre-wrap">
+                <div className="flex-1 pl-3 md:pl-5 mb-8 overflow-auto">
+                  <p className="text-sm md:text-base text-label-assistive whitespace-pre-wrap break-words">
                     {postData.content}
                   </p>
                 </div>
@@ -300,7 +300,7 @@ const Post = () => {
           </div>
           {/* 댓글 입력 영역 */}
           <div className="pt-6 border-t border-line-normal flex flex-col justify-center items-center">
-            <div className="flex gap-3 max-w-2xl">
+            <div className="flex gap-2 md:gap-3 w-full max-w-2xl">
               <div className="flex-1">
                 <Input
                   placeholder="비밀번호를 입력해 주세요."
@@ -310,20 +310,20 @@ const Post = () => {
               </div>
               <button
                 onClick={handleDelete}
-                className="px-6 py-3 font-medium text-white transition bg-red-400 rounded hover:bg-red-500"
+                className="px-4 md:px-6 py-3 text-sm md:text-base font-medium text-white transition bg-red-400 rounded hover:bg-red-500"
               >
                 삭제하기
               </button>
             </div>
 
             {/* 현상금 표시 */}
-            <div className="flex items-center justify-center gap-4 py-6">
+            <div className="flex items-center justify-center gap-3 md:gap-4 py-6">
               <button
                 onClick={handleUpvote}
-                className={`p-3 transition rounded-full bg-fill-neutral hover:bg-fill-alter`}
+                className={`p-2 md:p-3 transition rounded-full bg-fill-neutral hover:bg-fill-alter`}
               >
                 <svg
-                  className="w-6 h-6 text-label-neutral"
+                  className="w-5 h-5 md:w-6 md:h-6 text-label-neutral"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -337,22 +337,24 @@ const Post = () => {
                 </svg>
               </button>
               <div className="text-center">
-                <p className="mb-1 text-sm text-label-neutral">{t('post.labels.bounty')}</p>
-                <p className="text-3xl font-bold text-label-normal">
+                <p className="mb-1 text-xs md:text-sm text-label-neutral">
+                  {t("post.labels.bounty")}
+                </p>
+                <p className="text-2xl md:text-3xl font-bold text-label-normal">
                   {formatNumber(reward)}₩
                 </p>
               </div>
               <button
                 onClick={handleDownvote}
                 disabled={reward <= 0}
-                className={`p-3 transition rounded-full ${
+                className={`p-2 md:p-3 transition rounded-full ${
                   reward <= 0
                     ? "bg-fill-alter cursor-not-allowed opacity-50"
                     : "bg-fill-neutral hover:bg-fill-alter"
                 }`}
               >
                 <svg
-                  className="w-6 h-6 text-label-neutral"
+                  className="w-5 h-5 md:w-6 md:h-6 text-label-neutral"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

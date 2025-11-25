@@ -3,25 +3,24 @@ import SchoolList from "../../components/home/SchoolList";
 import Banner from "../../assets/vertical-meme.webp";
 
 const Home = () => {
-  
   const { t } = useTranslation();
 
   return (
-    <div className="self-stretch px-36 py-6 inline-flex flex-col justify-start items-start gap-4 overflow-hidden">
+    <div className="self-stretch px-4 md:px-12 lg:px-36 py-6 inline-flex flex-col justify-start items-start gap-4 overflow-hidden">
       <div className="self-stretch py-5 flex flex-col justify-start items-start gap-5">
-        <div className="justify-start text-label-normal text-3xl font-extrabold font-['Pretendard']">
-          {t('home.title')}
+        <div className="justify-start text-label-normal text-2xl md:text-3xl font-extrabold font-['Pretendard']">
+          {t("home.title")}
         </div>
         <div className="flex flex-col justify-start items-start gap-3">
-          <div className="justify-start text-label-assistive text-2xl font-bold font-['Pretendard']">
-            {t('home.subtitle')}
+          <div className="justify-start text-label-assistive text-xl md:text-2xl font-bold font-['Pretendard']">
+            {t("home.subtitle")}
           </div>
-          <div className="justify-start text-label-neutral text-xl font-normal font-['Pretendard']">
-            {t('home.bullet.one')}
+          <div className="justify-start text-label-neutral text-base md:text-xl font-normal font-['Pretendard']">
+            {t("home.bullet.one")}
             <br />
-            {t('home.bullet.two')}
+            {t("home.bullet.two")}
             <br />
-            {t('home.bullet.three')}
+            {t("home.bullet.three")}
           </div>
         </div>
       </div>
@@ -29,7 +28,7 @@ const Home = () => {
         <SchoolList />
         <a
           href="https://youtu.be/yH88qRmgkGI?si=6IwEPZvOlfkk1Ogv"
-          className="h-min w-[30%]"
+          className="hidden lg:block h-min w-[30%]"
           target="_blank"
         >
           <img src={Banner} alt="" className="w-full" />

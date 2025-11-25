@@ -174,7 +174,7 @@ const School = () => {
       <div className="grow flex items-center justify-center bg-bg-normal">
         <div className="text-center">
           <div className="text-2xl">⏳</div>
-          <p className="mt-4 text-label-neutral">{t('school.loading')}</p>
+          <p className="mt-4 text-label-neutral">{t("school.loading")}</p>
         </div>
       </div>
     );
@@ -187,21 +187,29 @@ const School = () => {
 
   return (
     <div className="grow bg-bg-normal">
-      <div className="px-36 py-8 flex gap-5">
-        <div className="flex-1">
+      <div className="px-4 md:px-12 lg:px-36 py-8 flex gap-5">
+        <div className="flex-1 min-w-0">
           {/* 학교 정보 섹션 */}
           <div className="pb-6 mb-6">
             <h1
-              className="text-2xl font-bold text-label-normal mb-2 cursor-pointer hover:text-label-assistive transition"
+              className="text-xl md:text-2xl font-bold text-label-normal mb-2 cursor-pointer hover:text-label-assistive transition break-words"
               onClick={() => navigate("/")}
             >
               {schoolData.name}
             </h1>
-            <p className="text-md">
-              <span className="text-label-neutral">{t('school.labels.posts')}</span>{" "}
-              <span className="text-label-normal pr-5">{posts.length}</span>
-              <span className="text-label-neutral">{t('school.labels.location')}</span>{" "}
-              <span className="text-label-normal">{schoolData.address}</span>
+            <p className="text-sm md:text-md">
+              <span className="text-label-neutral">
+                {t("school.labels.posts")}
+              </span>{" "}
+              <span className="text-label-normal pr-3 md:pr-5">
+                {posts.length}
+              </span>
+              <span className="text-label-neutral">
+                {t("school.labels.location")}
+              </span>{" "}
+              <span className="text-label-normal break-words">
+                {schoolData.address}
+              </span>
             </p>
           </div>
 
@@ -209,25 +217,25 @@ const School = () => {
           <div className="mb-4">
             <button
               onClick={handleWriteClick}
-              className="px-6 py-2 bg-label-normal text-white rounded hover:bg-label-assistive transition"
+              className="px-4 md:px-6 py-2 text-sm md:text-base bg-label-normal text-white rounded hover:bg-label-assistive transition"
             >
-              {t('school.buttons.write')}
+              {t("school.buttons.write")}
             </button>
           </div>
 
           {/* 게시물 목록 */}
-          <div className="overflow-hidden">
+          <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-line-normal">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-label-assistive">
-                    {t('school.table.title')}
+                  <th className="px-3 md:px-6 py-3 text-left text-xs md:text-sm font-medium text-label-assistive">
+                    {t("school.table.title")}
                   </th>
-                  <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
-                    {t('school.table.date')}
+                  <th className="px-3 md:px-6 py-3 text-center text-xs md:text-sm font-medium text-label-assistive whitespace-nowrap">
+                    {t("school.table.date")}
                   </th>
-                  <th className="px-6 py-3 text-center text-sm font-medium text-label-assistive">
-                    {t('school.table.reward')}
+                  <th className="px-3 md:px-6 py-3 text-center text-xs md:text-sm font-medium text-label-assistive whitespace-nowrap">
+                    {t("school.table.reward")}
                   </th>
                 </tr>
               </thead>
@@ -239,13 +247,13 @@ const School = () => {
                       onClick={() => handlePostClick(post.id)}
                       className="hover:bg-fill-neutral cursor-pointer transition"
                     >
-                      <td className="px-6 py-4 text-sm text-label-normal">
+                      <td className="px-3 md:px-6 py-4 text-xs md:text-sm text-label-normal">
                         {post.title}
                       </td>
-                      <td className="px-6 py-4 text-sm text-label-normal text-center">
+                      <td className="px-3 md:px-6 py-4 text-xs md:text-sm text-label-normal text-center whitespace-nowrap">
                         {formatDate(post.createdAt)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-label-normal text-center">
+                      <td className="px-3 md:px-6 py-4 text-xs md:text-sm text-label-normal text-center whitespace-nowrap">
                         {formatNumber(post.upvote - post.downvote)}₩
                       </td>
                     </tr>
@@ -254,9 +262,9 @@ const School = () => {
                   <tr>
                     <td
                       colSpan={3}
-                      className="px-6 py-8 text-center text-label-alter"
+                      className="px-6 py-8 text-center text-label-alter text-sm"
                     >
-                      {t('school.no_posts')}
+                      {t("school.no_posts")}
                     </td>
                   </tr>
                 )}
@@ -268,7 +276,7 @@ const School = () => {
         {/* 배너 */}
         <a
           href="https://www.youtube.com/watch?v=q1ULJ92aldE"
-          className="w-[20%] h-min"
+          className="hidden lg:block w-[20%] h-min flex-shrink-0"
           target="_blank"
           rel="noopener noreferrer"
         >
