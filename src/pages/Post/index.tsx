@@ -11,6 +11,7 @@ import {
   increment,
   deleteDoc,
 } from "firebase/firestore";
+import { verifyPassword } from "../../utils/password";
 
 interface PostData {
   title: string;
@@ -19,7 +20,7 @@ interface PostData {
   upvote: number;
   downvote: number;
   createdAt: string;
-  password: string;
+  passwordHash: string;
 }
 
 interface SchoolData {
@@ -160,13 +161,20 @@ const Post = () => {
       return;
     }
 
-    if (passwordInput !== postData.password) {
-      alert(t("post.alerts.password_mismatch"));
-      setPasswordInput("");
-      return;
-    }
-
     try {
+      // 입력한 비밀번호를 저장된 해시와 비교 (타이밍 공격 방지)
+      const isValid = await verifyPassword(
+        passwordInput,
+        postData.passwordHash
+      );
+
+      if (!isValid) {
+        alert(t("post.alerts.password_mismatch"));
+        setPasswordInput("");
+        return;
+      }
+
+      // 비밀번호가 일치하면 삭제
       const postRef = doc(db, "posts", id);
       await deleteDoc(postRef);
       alert(t("post.alerts.deleted"));

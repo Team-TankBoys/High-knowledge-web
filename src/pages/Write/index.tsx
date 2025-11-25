@@ -4,6 +4,7 @@ import Input from "../../components/Input";
 import { useTranslation } from "react-i18next";
 import { db } from "../../firebase";
 import { doc, getDoc, collection, addDoc } from "firebase/firestore";
+import { hashPassword } from "../../utils/password";
 
 const Write = () => {
   const { schoolId } = useParams<{ schoolId: string }>();
@@ -60,12 +61,15 @@ const Write = () => {
     }
 
     try {
+      // 비밀번호 해시화
+      const passwordHash = await hashPassword(password);
+
       // Firebase에 게시물 등록
       await addDoc(collection(db, "posts"), {
         schoolId: schoolId,
         title: title,
         content: content,
-        password: password,
+        passwordHash: passwordHash,
         upvote: 0,
         downvote: 0,
         createdAt: new Date().toISOString(),
