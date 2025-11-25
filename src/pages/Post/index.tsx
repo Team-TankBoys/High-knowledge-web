@@ -11,12 +11,6 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-interface Comment {
-  id: number;
-  content: string;
-  date: string;
-}
-
 interface PostData {
   title: string;
   content: string;
@@ -36,12 +30,13 @@ const Post = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [passwordInput, setPasswordInput] = useState("");
-  const [comments, setComments] = useState<Comment[]>([]);
   const [postData, setPostData] = useState<PostData | null>(null);
   const [schoolName, setSchoolName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [hasVoted, setHasVoted] = useState(false);
+  const [pendingUpvotes, setPendingUpvotes] = useState(0);
+  const [pendingDownvotes, setPendingDownvotes] = useState(0);
+  const [debounceTimer, setDebounceTimer] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -79,16 +74,52 @@ const Post = () => {
     };
 
     fetchPostData();
-
-    // localStorage에서 투표 여부 확인
-    const votedPosts = localStorage.getItem("votedPosts");
-    if (votedPosts) {
-      const votedPostsArray = JSON.parse(votedPosts);
-      if (votedPostsArray.includes(id)) {
-        setHasVoted(true);
-      }
-    }
   }, [id]);
+
+  // Debounced vote submission
+  useEffect(() => {
+    const submitVotes = async () => {
+      if (!id || (pendingUpvotes === 0 && pendingDownvotes === 0)) return;
+
+      try {
+        const postRef = doc(db, "posts", id);
+        const updates: any = {};
+
+        if (pendingUpvotes > 0) {
+          updates.upvote = increment(pendingUpvotes);
+        }
+        if (pendingDownvotes > 0) {
+          updates.downvote = increment(pendingDownvotes);
+        }
+
+        await updateDoc(postRef, updates);
+
+        // Reset pending votes after successful submission
+        setPendingUpvotes(0);
+        setPendingDownvotes(0);
+      } catch (error) {
+        console.error("Error updating votes:", error);
+        alert("현상금 업데이트에 실패했습니다.");
+      }
+    };
+
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+
+    if (pendingUpvotes > 0 || pendingDownvotes > 0) {
+      const timer = setTimeout(() => {
+        submitVotes();
+      }, 1000);
+      setDebounceTimer(timer);
+    }
+
+    return () => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [pendingUpvotes, pendingDownvotes, id]);
 
   // 로딩 중
   if (loading) {
@@ -151,63 +182,27 @@ const Post = () => {
   const handleUpvote = async () => {
     if (!id) return;
 
-    if (hasVoted) {
-      alert("이미 현상금을 조정하셨습니다.");
-      return;
-    }
+    // 로컬에서 즉시 UI 업데이트
+    setPostData((prev) => (prev ? { ...prev, upvote: prev.upvote + 1 } : null));
 
-    try {
-      const postRef = doc(db, "posts", id);
-      await updateDoc(postRef, {
-        upvote: increment(1),
-      });
-
-      // UI 업데이트
-      setPostData((prev) =>
-        prev ? { ...prev, upvote: prev.upvote + 1 } : null
-      );
-
-      // localStorage에 투표 기록 저장
-      const votedPosts = localStorage.getItem("votedPosts");
-      const votedPostsArray = votedPosts ? JSON.parse(votedPosts) : [];
-      votedPostsArray.push(id);
-      localStorage.setItem("votedPosts", JSON.stringify(votedPostsArray));
-      setHasVoted(true);
-    } catch (error) {
-      console.error("Error updating upvote:", error);
-      alert("현상금 증가에 실패했습니다.");
-    }
+    // 대기 중인 upvote 카운트 증가
+    setPendingUpvotes((prev) => prev + 1);
   };
 
   const handleDownvote = async () => {
     if (!id || !postData) return;
 
-    if (hasVoted) {
-      alert("이미 현상금을 조정하셨습니다.");
-      return;
-    }
+    // 현상금이 0 이하로 내려가지 않도록 방지
+    const currentReward = postData.upvote - postData.downvote;
+    if (currentReward <= 0) return;
 
-    try {
-      const postRef = doc(db, "posts", id);
-      await updateDoc(postRef, {
-        downvote: increment(1),
-      });
+    // 로컬에서 즉시 UI 업데이트
+    setPostData((prev) =>
+      prev ? { ...prev, downvote: prev.downvote + 1 } : null
+    );
 
-      // UI 업데이트
-      setPostData((prev) =>
-        prev ? { ...prev, downvote: prev.downvote + 1 } : null
-      );
-
-      // localStorage에 투표 기록 저장
-      const votedPosts = localStorage.getItem("votedPosts");
-      const votedPostsArray = votedPosts ? JSON.parse(votedPosts) : [];
-      votedPostsArray.push(id);
-      localStorage.setItem("votedPosts", JSON.stringify(votedPostsArray));
-      setHasVoted(true);
-    } catch (error) {
-      console.error("Error updating downvote:", error);
-      alert("현상금 감소에 실패했습니다.");
-    }
+    // 대기 중인 downvote 카운트 증가
+    setPendingDownvotes((prev) => prev + 1);
   };
 
   return (
@@ -271,12 +266,7 @@ const Post = () => {
             <div className="flex items-center justify-center gap-4 py-6">
               <button
                 onClick={handleUpvote}
-                disabled={hasVoted}
-                className={`p-3 transition rounded-full ${
-                  hasVoted
-                    ? "bg-fill-alter cursor-not-allowed opacity-50"
-                    : "bg-fill-neutral hover:bg-fill-alter"
-                }`}
+                className={`p-3 transition rounded-full bg-fill-neutral hover:bg-fill-alter`}
               >
                 <svg
                   className="w-6 h-6 text-label-neutral"
@@ -300,9 +290,9 @@ const Post = () => {
               </div>
               <button
                 onClick={handleDownvote}
-                disabled={hasVoted || reward <= 0}
+                disabled={reward <= 0}
                 className={`p-3 transition rounded-full ${
-                  hasVoted || reward <= 0
+                  reward <= 0
                     ? "bg-fill-alter cursor-not-allowed opacity-50"
                     : "bg-fill-neutral hover:bg-fill-alter"
                 }`}
