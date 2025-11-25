@@ -11,7 +11,7 @@ import {
   increment,
   deleteDoc,
 } from "firebase/firestore";
-import { hashPassword } from "../../utils/password";
+import { verifyPassword } from "../../utils/password";
 
 interface PostData {
   title: string;
@@ -162,11 +162,13 @@ const Post = () => {
     }
 
     try {
-      // 입력한 비밀번호를 해시화
-      const inputHash = await hashPassword(passwordInput);
+      // 입력한 비밀번호를 저장된 해시와 비교 (타이밍 공격 방지)
+      const isValid = await verifyPassword(
+        passwordInput,
+        postData.passwordHash
+      );
 
-      // 저장된 해시와 비교
-      if (inputHash !== postData.passwordHash) {
+      if (!isValid) {
         alert(t("post.alerts.password_mismatch"));
         setPasswordInput("");
         return;
